@@ -1,25 +1,21 @@
 <template>
   <div class="reply">
+<!--    评论区域-->
     <div class="my-reply" >
       <div class="header">
+<!--        标题-->
         <span class="header-title">评论</span>
       </div>
+<!--      评论输入框及发布按钮-->
       <div class="content">
+<!--        评论发布人头像-->
         <div class="avatar-box">
-          <!--          <img src="https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image" alt="" class="avatar">-->
           <img :src="commentThis.myHeader" alt="" class="avatar">
         </div>
         <div class="form-box">
+<!--          评论输入框-->
           <div class="auth-card">
             <div class="input-box">
-              <!--              spellcheck 属性规定是否对元素内容进行拼写检查。
-                                placeholder 实现类似输入框默认显示的效果
-                                @focus是元素获取焦点时所触发的事件
-                                @blur是元素失去焦点时所触发的事件
-                                @input适用于实时查询，每输入一个字符都会触发该事件
-                                contenteditable 是一个枚举属性，表示元素是否可被用户编辑。带有contenteditable属性的div可以作为输入框
-                                @blur="UnShowReplyBtn"
-              -->
               <div
                   class="rich-input empty"
                   contenteditable="true"
@@ -31,6 +27,7 @@
               ></div>
             </div>
           </div>
+<!--          评论输入框下的发布按钮,当输入框获取焦点时,显示发布按钮-->
           <div class="action-box" v-show="commentThis.btnShow">
             <div class="emoji-container emoji-btn">
               <div class="emoji-box">
@@ -49,7 +46,9 @@
         </div>
       </div>
     </div>
+<!--    显示所有评论的区域-->
     <div class="others-reply" @click="UnShowReplyBtnOne">
+<!--      标题-->
       <div class="title">
         全部评论
         <i></i>
@@ -57,26 +56,34 @@
       <!--      一级评论区-->
       <div v-for="(item,i) in commentThis.comments" :key="i" class="list">
         <div class="comment">
+<!--          评论人头像-->
           <div class="popover-box ">
             <a href="#" class="user-link">
               <img :src="item.headImg" alt="" class="avatar">
             </a>
           </div>
+
           <div class="content-box">
             <div class="comment-main">
               <div class="user-box">
+<!--              显示评论人名称  -->
                 <div class="user-popover">
                   <a href="#" class="username">
                     <span class="name">{{item.name}}</span>
                   </a>
                 </div>
+<!--               显示评论发布时间 -->
                 <time class="time">{{item.time}}</time>
               </div>
+<!--              显示评论内容-->
               <div class="content">{{item.comment}}</div>
+<!--              点赞及回复-->
               <div class="action-box">
+<!--                点赞-->
                 <div class="item dig-item" @click="addThumbsUp(item)">
                   <i class="iconfont icon-dianzan_kuai"><span>{{item.like}}</span></i>
                 </div>
+<!--                回复-->
                 <div class="item " @click="showReplyInput(i,item.name,item.id)">
                   <i class="iconfont icon-duihuaxinxitianchong"><span>{{item.commentNum}}</span></i>
                 </div>
@@ -85,6 +92,7 @@
             <!--            二级评论区-->
             <div class="subcomment-wrapper" @click="UnShowReplyBtnTwo(i)">
               <div v-for="(reply,j) in item.reply" :key="j" class="sub-comment-list">
+                <!--          评论人头像-->
                 <div class="popover-box">
                   <a href="#" class="user-link">
                     <img :src="reply.headImg" alt="" class="avatar">
@@ -93,25 +101,30 @@
                 <div class="content-box">
                   <div class="content-wrapper">
                     <div class="user-box">
+<!--                      评论人名称-->
                       <div class="user-popover">
                         <a href="#" class="username">
                           <span class="name">{{reply.from}}</span>
                         </a>
                       </div>
+<!--                      被回复评论人名称-->
                       <div class="rely-box">
                         <span>回复</span>
                         <div class="user-popover">
                           <a href="#" class="repliedname">{{reply.to}}</a>
                         </div>
                       </div>
+<!--                      评论发布时间-->
                       <time class="time">{{reply.time}}</time>
                     </div>
+<!--                    评论内容-->
                     <div class="content">{{reply.comment}}</div>
                     <div class="action-box">
+<!--                      点赞-->
                       <div class="item dig-item" @click="addThumbsUp(reply)">
                         <i class="iconfont icon-dianzan_kuai"><span>{{reply.like}}</span></i>
                       </div>
-                      <!--                       @click.stop 阻止事件冒泡-->
+<!--                      回复-->
                       <div class="item " @click="showReplyInput(i,reply.from,reply.id)" @click.stop="">
                         <i class="iconfont icon-duihuaxinxitianchong"><span>回复</span></i>
                       </div>
@@ -124,6 +137,7 @@
             <div class="comment-form" v-show="_inputShow(i)" >
               <div class="content">
                 <div class="form-box">
+<!--                  回复评论输入框-->
                   <div class="auth-card">
                     <div class="input-box input-box-comment">
                       <div
@@ -136,18 +150,21 @@
                       ></div>
                     </div>
                   </div>
+<!--                  发布评论按钮及表情,图片图标-->
                   <div class="action-box">
+<!--                    表情-->
                     <div class="emoji-container emoji-btn">
                       <div class="emoji-box">
                         <i class="iconfont icon-shoucang icon"><span>表情</span></i>
                       </div>
                     </div>
+<!--                    图片-->
                     <div class="image-btn">
                       <i class="iconfont icon-duihuaxinxitianchong icon"><span>图片</span></i>
                     </div>
+<!--                    评论-->
                     <div class="submit">
                       <span>Ctrl + Enter</span>
-                      <!--             disabled 赋予该属性时该元素将变得不可交互-->
                       <button class="submit-btn submit-btn-new" @click="sendCommentReply(i)">评论</button>
                     </div>
                   </div>
@@ -158,137 +175,30 @@
         </div>
 
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
 import '@/assets/font/iconfont.css'
-// import imageone from "@/assets/images/1.jpg";
-/*import imageone from '@/assets/images/1.jpg'
-import imagetwo from '@/assets/images/2.jpg'
-import imagethree from '@/assets/images/3.jpg'
-import imagefour from '@/assets/images/4.jpg'*/
 export default {
-  name: 'ArticleComment',
-  /*data() {
-    return {
-      //我的评论
-      btnShow: false,
-      index: '0',
-      replyComment: '',
-      myName: '张三',
-      // myHeader: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
-      myHeader: imageone,
-      myId: 19870621,
-      to: '',
-      toId: -1,
-      //评论区
-      comments: [
-        {
-          name: '张三',
-          id: 19870621,
-          // headImg: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
-          headImg: imageone,
-          comment: '1212122',
-          time: '2022年8月14日 8:43',
-          commentNum: 2,
-          like: 15,
-          inputShow: false,
-          reply: [
-            {
-              from: '王二',
-              fromId: 19891221,
-              // fromHeadImg: 'https://p6-passport.byteacctimg.com/img/mosaic-legacy/3791/5070639578~300x300.image',
-              headImg: imagetwo,
-              to: '张三',
-              toId: 19870621,
-              comment: '21312313123',
-              time: '2022年8月14日 8:43',
-              commentNum: 1,
-              like: 15,
-              inputShow: false
-            },
-            {
-              from: '李四',
-              fromId: 1123,
-              // fromHeadImg: 'https://p6-passport.byteacctimg.com/img/user-avatar/22358593c3d2416498aa150ccf8d645f~300x300.image',
-              headImg: imagethree,
-              to: '张三',
-              toId: 19870621,
-              comment: '3131312123',
-              time: '2022年8月14日 8:43',
-              commentNum: 0,
-              like: 5,
-              inputShow: false
-
-            }
-          ]
-        },
-        {
-          name: '王二',
-          id: 19891221,
-          // headImg: 'https://p6-passport.byteacctimg.com/img/mosaic-legacy/3791/5070639578~300x300.image',
-          headImg: imagetwo,
-          comment: '213131313',
-          time: '2022年8月14日 8:43',
-          commentNum: 1,
-          like: 5,
-          inputShow: false,
-          reply: [
-            {
-              from: '张三',
-              fromId: 19870621,
-              // fromHeadImg: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
-              headImg: imageone,
-              to: '麻子',
-              toId: 19891221,
-              comment: '23123122113',
-              time: '2022年8月14日 8:43',
-              commentNum: 25,
-              like: 5,
-              inputShow: false
-
-            }
-          ]
-        },
-        {
-          name: '麻子',
-          id: 20190830,
-          // headImg: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
-          headImg: imagefour,
-          comment: '12312312312',
-          time: '2022年8月14日 8:43',
-          commentNum: 0,
-          like: 5,
-          inputShow: false,
-          reply: []
-        },
-      ]
-    }
-  },*/
+  name: 'NewComment',
   props:{
     commentse: {
-        required: true,//必要性
+      required: true,
     },
   },
   data(){
     return{
-      //评论区
       commentThis: this.commentse
     }
   },
   methods: {
     //  1.评论区域输入框获取焦点后,显示发布按钮等
     showReplyBtn(){
-      console.log(this.commentThis.comments);
       this.commentThis.btnShow = true
-      //document.getElementsByClassName()获取的是数组,添加[0],即可
       var richInput = document.getElementsByClassName('input-box')[0];
       richInput.style.border = "2px solid blue"
-      //在文档加载后，为文本域设置焦点:
-      // richInput.focus()
     },
     // 2. 在评论区输入框为空且点击全部评论区域时,隐藏发布按钮
     UnShowReplyBtnOne(){
@@ -300,31 +210,19 @@ export default {
     },
     //3.在回复区输入框为空且点击全部评论区域时,隐藏发布按钮
     UnShowReplyBtnTwo(i){
-      if (!this.commentThis.replyComment && this.commentThis.comment[i].inputShow){
+      if (!this.commentThis.replyComment && this.commentThis.comments[i].inputShow){
         this.commentThis.comments[i].inputShow = false
       }
     },
 
     //4. 评论区域输入框输入内容时,改变发布按钮的颜色,获取输入框中的内容
     onDivInput: function (e) {
-      //e.target就是指发生事件的对象，而this则是谁调用它则指向谁。
-      //e.target.innerText 获取触发onDivInput事件的对象中的内容
       this.commentThis.replyComment = e.target.innerText;
-      /*  var submitBtn = document.getElementsByClassName('submit-btn')[0];
-        var submitBtnNew = document.getElementsByClassName('submit-btn-new')[0];
-        if (this.replyComment != ''){
-          submitBtn.style.backgroundColor = "#1e80ff"
-          submitBtnNew.style.backgroundColor = "#1e80ff"
-        }
-        else {
-          submitBtn.style.backgroundColor = "#abcdff"
-          submitBtnNew.style.backgroundColor = "#abcdff"
-        }*/
     },
     //5. 点击发布按钮,创建一个新的一级评论
     sendComment(){
       if (!this.commentThis.replyComment) {
-        this.$message({
+        this.commentThis.$message({
           showClose: true,
           type: 'warning',
           message: '评论不能为空'
@@ -355,7 +253,7 @@ export default {
     //7. 点击发布按钮,创建一个新的二级评论
     sendCommentReply(i) {
       if (!this.commentThis.replyComment) {
-        this.$message({
+        this.commentThis.$message({
           showClose: true,
           type: 'warning',
           message: '评论不能为空'
@@ -364,31 +262,30 @@ export default {
         let a = {}
         let timeNow = new Date().getTime();
         let time = this.dateStr(timeNow);
-        a.from = this.myName
-        a.to = this.to
-        a. headImg = this.myHeader
-        a.comment = this.replyComment
+        a.from = this.commentThis.myName
+        a.to = this.commentThis.to
+        a. headImg = this.commentThis.myHeader
+        a.comment = this.commentThis.replyComment
         a.time = time
         a.commentNum = 0
         a.like = 0
-        this.commentThis[i].reply.push(a)
-        this.replyComment = ''
+        this.commentThis.comments[i].reply.push(a)
+        this.commentThis.replyComment = ''
         document.getElementsByClassName("rich-comment-input")[i].innerHTML = ""
       }
     },
     //8. 获取回复人的信息,并修改是否显示输入框
     showReplyInput(i, name, id) {
       //关闭上一个评论的输入框
-      this.commentThis[this.index].inputShow = false
+      this.commentThis.comments[this.commentThis.index].inputShow = false
       //将当前边框返回
-      this.index = i
+      this.commentThis.index = i
       this.commentThis.comments[i].inputShow = true
-      this.to = name
-      this.toId = id
+      this.commentThis.to = name
+      this.commentThis.toId = id
     },
     //9. 点赞增加
     addThumbsUp(item){
-
       item.like++
     },
     //根据发布时间修改显示的时间
@@ -425,11 +322,11 @@ export default {
 </script>
 
 <style scoped lang="css">
+/*布局采用伸缩布局,使用时可以直接更改 .reply 中的宽高百分比,或直接设置父组件的宽高*/
 .reply{
-  width: 50%;
+  width: 100%;
   height: 100%;
   margin: 0 auto;
-  /*background-color: black;*/
 }
 .reply .my-reply{
   width: 100%;
@@ -492,7 +389,7 @@ export default {
 /*:before 创建一个伪元素，其将成为匹配选中的元素的第一个子元素。常通过 content 属性来为一个元素添加修饰性的内容。此元素默认为行内元素。*/
 .rich-input:empty:before{
   content: attr(placeholder);/*显示placeholder中的内容*/
-  /*content: 'this is content';*/
+  /*content: 'this.commentThis is content';*/
   color: #252933;
 }
 /*获得焦点时*/

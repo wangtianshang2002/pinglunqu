@@ -7,7 +7,7 @@
       <div class="content">
         <div class="avatar-box">
 <!--          <img src="https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image" alt="" class="avatar">-->
-          <img :src="myHeader" alt="" class="avatar">
+          <img :src="commentThis.myHeader" alt="" class="avatar">
         </div>
         <div class="form-box">
           <div class="auth-card">
@@ -17,7 +17,7 @@
                   @focus是元素获取焦点时所触发的事件
                   @blur是元素失去焦点时所触发的事件
                   @input适用于实时查询，每输入一个字符都会触发该事件
-                  contenteditable 是一个枚举属性，表示元素是否可被用户编辑。
+                  contenteditable 是一个枚举属性，表示元素是否可被用户编辑。带有contenteditable属性的div可以作为输入框
                   @blur="UnShowReplyBtn"
 -->
               <div
@@ -26,13 +26,12 @@
                   placeholder="请输入内容"
                   spellcheck="false"
                   disabled="disabled"
-
                   @focus="showReplyBtn"
                   @input="onDivInput($event)"
               ></div>
             </div>
           </div>
-          <div class="action-box" v-show="btnShow">
+          <div class="action-box" v-show="commentThis.btnShow">
             <div class="emoji-container emoji-btn">
               <div class="emoji-box">
                 <i class="iconfont icon-shoucang icon"><span>表情</span></i>
@@ -56,7 +55,7 @@
         <i></i>
       </div>
 <!--      一级评论区-->
-      <div v-for="(item,i) in comments" :key="i" class="list">
+      <div v-for="(item,i) in commentThis.comments" :key="i" class="list">
         <div class="comment">
           <div class="popover-box ">
             <a href="#" class="user-link">
@@ -75,7 +74,7 @@
               </div>
               <div class="content">{{item.comment}}</div>
               <div class="action-box">
-                <div class="item dig-item">
+                <div class="item dig-item" @click="addThumbsUp(item)">
                   <i class="iconfont icon-dianzan_kuai"><span>{{item.like}}</span></i>
                 </div>
                 <div class="item " @click="showReplyInput(i,item.name,item.id)">
@@ -109,9 +108,10 @@
                       </div>
                       <div class="content">{{reply.comment}}</div>
                       <div class="action-box">
-                        <div class="item dig-item">
+                        <div class="item dig-item" @click="addThumbsUp(reply)">
                           <i class="iconfont icon-dianzan_kuai"><span>{{reply.like}}</span></i>
                         </div>
+<!--                       @click.stop 阻止事件冒泡-->
                         <div class="item " @click="showReplyInput(i,reply.from,reply.id)" @click.stop="">
                           <i class="iconfont icon-duihuaxinxitianchong"><span>回复</span></i>
                         </div>
@@ -164,13 +164,15 @@
 
 <script>
 import '@/assets/font/iconfont.css'
+/*
 import imageone from '@/assets/images/1.jpg'
 import imagetwo from '@/assets/images/2.jpg'
 import imagethree from '@/assets/images/3.jpg'
 import imagefour from '@/assets/images/4.jpg'
+*/
 export default {
   name: 'ArticleComment',
-  data() {
+  /*data() {
     return {
       //我的评论
       btnShow: false,
@@ -265,12 +267,22 @@ export default {
         },
       ]
     }
+  },*/
+  props:{
+    commentse: {
+      required: true,//必要性
+    },
   },
-
+  data(){
+    return{
+      //评论区
+      commentThis: this.commentse
+    }
+  },
   methods: {
   //  1.评论区域输入框获取焦点后,显示发布按钮等
     showReplyBtn(){
-      this.btnShow = true
+      this.commentThis.btnShow = true
       //document.getElementsByClassName()获取的是数组,添加[0],即可
       var richInput = document.getElementsByClassName('input-box')[0];
       richInput.style.border = "2px solid blue"
@@ -279,42 +291,39 @@ export default {
     },
   // 2. 在评论区输入框为空且点击全部评论区域时,隐藏发布按钮
     UnShowReplyBtnOne(){
-      if (!this.replyComment && this.btnShow){
-        this.btnShow = false
+      if (!this.commentThis.replyComment && this.commentThis.btnShow){
+        this.commentThis.btnShow = false
         var richInput = document.getElementsByClassName('input-box')[0];
         richInput.style.border = "2px solid #fff"
       }
     },
     //3.在回复区输入框为空且点击全部评论区域时,隐藏发布按钮
     UnShowReplyBtnTwo(i){
-      this.comments[i].inputShow = false
-      console.log(this.comments[i].inputShow);
-      /*if (!this.replyComment && this.comments[i].inputShow){
-        this.comments[i].inputShow = !this.comments[i].inputShow
-        console.log(this.comments[i].inputShow);
-      }*/
+      if (!this.commentThis.replyComment && this.commentThis.comments[i].inputShow){
+        this.commentThis.comments[i].inputShow = false
+      }
     },
 
     //4. 评论区域输入框输入内容时,改变发布按钮的颜色,获取输入框中的内容
     onDivInput: function (e) {
-      //e.target就是指发生事件的对象，而this则是谁调用它则指向谁。
+      //e.target就是指发生事件的对象，而this.commentThis则是谁调用它则指向谁。
       //e.target.innerText 获取触发onDivInput事件的对象中的内容
-      this.replyComment = e.target.innerText;
-      var submitBtn = document.getElementsByClassName('submit-btn')[0];
-      // var submitBtnNew = document.getElementsByClassName('submit-btn-new')[0];
-      if (this.replyComment != '' ){
+      this.commentThis.replyComment = e.target.innerText;
+    /*  var submitBtn = document.getElementsByClassName('submit-btn')[0];
+      var submitBtnNew = document.getElementsByClassName('submit-btn-new')[0];
+      if (this.commentThis.replyComment != ''){
         submitBtn.style.backgroundColor = "#1e80ff"
-        // submitBtnNew.style.backgroundColor = "#1e80ff"
+        submitBtnNew.style.backgroundColor = "#1e80ff"
       }
-     /* else {
+      else {
         submitBtn.style.backgroundColor = "#abcdff"
         submitBtnNew.style.backgroundColor = "#abcdff"
       }*/
     },
     //5. 点击发布按钮,创建一个新的一级评论
     sendComment(){
-      if (!this.replyComment) {
-        this.$message({
+      if (!this.commentThis.replyComment) {
+        this.commentThis.$message({
           showClose: true,
           type: 'warning',
           message: '评论不能为空'
@@ -325,29 +334,27 @@ export default {
         let input = document.getElementsByClassName('rich-input')[0]
         let timeNow = new Date().getTime();
         let time = this.dateStr(timeNow);
-        a.name = this.myName
-        a.comment = this.replyComment
-        a.headImg = this.myHeader
+        a.name = this.commentThis.myName
+        a.comment = this.commentThis.replyComment
+        a.headImg = this.commentThis.myHeader
         a.time = time
         a.commentNum = 0
         a.like = 0
         //添加,解决新发布的评论,无法回复
         a.reply = []
-        this.comments.push(a)
-        this.replyComment = ''
+        this.commentThis.comments.push(a)
+        this.commentThis.replyComment = ''
         input.innerHTML = '';
-        var submitBtn = document.getElementsByClassName('submit-btn')[0];
-        submitBtn.style.backgroundColor = "#abcdff"
       }
     },
     //6.返回是否显示输入框
     _inputShow(i) {
-      return this.comments[i].inputShow
+      return this.commentThis.comments[i].inputShow
     },
     //7. 点击发布按钮,创建一个新的二级评论
     sendCommentReply(i) {
-      if (!this.replyComment) {
-        this.$message({
+      if (!this.commentThis.replyComment) {
+        this.commentThis.$message({
           showClose: true,
           type: 'warning',
           message: '评论不能为空'
@@ -356,33 +363,32 @@ export default {
         let a = {}
         let timeNow = new Date().getTime();
         let time = this.dateStr(timeNow);
-        a.from = this.myName
-        a.to = this.to
-        a. headImg = this.myHeader
-        a.comment = this.replyComment
+        a.from = this.commentThis.myName
+        a.to = this.commentThis.to
+        a. headImg = this.commentThis.myHeader
+        a.comment = this.commentThis.replyComment
         a.time = time
         a.commentNum = 0
         a.like = 0
-        this.comments[i].reply.push(a)
-        this.replyComment = ''
+        this.commentThis.comments[i].reply.push(a)
+        this.commentThis.replyComment = ''
         document.getElementsByClassName("rich-comment-input")[i].innerHTML = ""
-        var submitBtnNew = document.getElementsByClassName('submit-btn-new')[0];
-        submitBtnNew.style.backgroundColor = "#abcdff"
       }
     },
     //8. 获取回复人的信息,并修改是否显示输入框
     showReplyInput(i, name, id) {
       //关闭上一个评论的输入框
-      this.comments[this.index].inputShow = false
+      this.commentThis.comments[this.commentThis.index].inputShow = false
       //将当前边框返回
-      this.index = i
-      this.comments[i].inputShow = true
-      this.to = name
-      this.toId = id
-      /*if (!this.replyComment && this.comments[i].inputShow) {
-        this.comments[i].inputShow = !this.comments[i].inputShow
-        console.log(this.comments[i].inputShow);
-      }*/
+      this.commentThis.index = i
+      this.commentThis.comments[i].inputShow = true
+      this.commentThis.to = name
+      this.commentThis.toId = id
+    },
+    //9. 点赞增加
+    addThumbsUp(item){
+
+      item.like++
     },
     //根据发布时间修改显示的时间
     dateStr(date) {
@@ -485,7 +491,7 @@ export default {
 /*:before 创建一个伪元素，其将成为匹配选中的元素的第一个子元素。常通过 content 属性来为一个元素添加修饰性的内容。此元素默认为行内元素。*/
 .rich-input:empty:before{
   content: attr(placeholder);/*显示placeholder中的内容*/
-  /*content: 'this is content';*/
+  /*content: 'this.commentThis is content';*/
   color: #252933;
 }
 /*获得焦点时*/
@@ -567,7 +573,7 @@ export default {
   text-align: center;
   font-size: 14px;
   line-height: 36px;
-  background: #abcdff;
+  background: #1e80ff;
   border: 0 solid #fff;
   border-radius: 4px;
   box-sizing: border-box;
@@ -686,6 +692,9 @@ export default {
   display: flex;
   align-items: center;
 }
+.action-box .item:hover{
+  color: #1e80ff;
+}
 .action-box .item i{
   fill: #8a919f;
   margin-right: 4px;
@@ -773,6 +782,7 @@ export default {
   margin-top: 8px;
   user-select: none;
 }
+
 .content-box .comment-form{
   margin-top: 12px;
   background: rgba(247,248,250,.7);

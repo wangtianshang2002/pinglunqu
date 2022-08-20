@@ -1,23 +1,30 @@
 <template>
 <!--  <comment :comments="commentData"></comment>-->
 <!--  <comments></comments>-->
-  <CommentNew ></CommentNew>
-<!--  <commentsNew></commentsNew>-->
+<!--  <CommentNew :commentse="commentData"></CommentNew>-->
+<!--  <commentsNew :commentse="commentData"></commentsNew>-->
+  <NewComment :commentse="commentData"></NewComment>
 </template>
 
 <script>
 
 // import comment from "@/components/comment";
 // import comments from "@/components/comments";
-import CommentNew from "@/components/CommentNew";
+/*import CommentNew from "@/components/CommentNew";*/
+import imageone from "@/assets/images/1.jpg";
+import imagetwo from "@/assets/images/2.jpg";
+import imagethree from "@/assets/images/3.jpg";
+import imagefour from "@/assets/images/4.jpg";
 // import commentsNew from "@/components/commentsNew";
 // import * as CommentData from '@/mockdata'
+import NewComment from "@/components/NewComment";
 export default {
   components: {
     // comment,
     // comments
-    CommentNew,
+    // CommentNew,
     // commentsNew
+    NewComment
   },
  /* data() {
     return {
@@ -84,5 +91,103 @@ export default {
   /*created() {
     this.commentData = CommentData.comment.data;
   },*/
+  data() {
+    return {
+      commentData: {
+        //我的评论
+        btnShow: false,
+        index: '0',
+        replyComment: '',
+        myName: '张三',
+        // myHeader: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
+        myHeader: imageone,
+        myId: 19870621,
+        to: '',
+        toId: -1,
+        //评论区
+        comments: [
+          {
+            name: '张三',
+            id: 19870621,
+            // headImg: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
+            headImg: imageone,
+            comment: '1212122',
+            time: '2022年8月14日 8:43',
+            commentNum: 2,
+            like: 15,
+            inputShow: false,
+            reply: [
+              {
+                from: '王二',
+                fromId: 19891221,
+                // fromHeadImg: 'https://p6-passport.byteacctimg.com/img/mosaic-legacy/3791/5070639578~300x300.image',
+                headImg: imagetwo,
+                to: '张三',
+                toId: 19870621,
+                comment: '21312313123',
+                time: '2022年8月14日 8:43',
+                commentNum: 1,
+                like: 15,
+                inputShow: false
+              },
+              {
+                from: '李四',
+                fromId: 1123,
+                // fromHeadImg: 'https://p6-passport.byteacctimg.com/img/user-avatar/22358593c3d2416498aa150ccf8d645f~300x300.image',
+                headImg: imagethree,
+                to: '张三',
+                toId: 19870621,
+                comment: '3131312123',
+                time: '2022年8月14日 8:43',
+                commentNum: 0,
+                like: 5,
+                inputShow: false
+
+              }
+            ]
+          },
+          {
+            name: '王二',
+            id: 19891221,
+            // headImg: 'https://p6-passport.byteacctimg.com/img/mosaic-legacy/3791/5070639578~300x300.image',
+            headImg: imagetwo,
+            comment: '213131313',
+            time: '2022年8月14日 8:43',
+            commentNum: 1,
+            like: 5,
+            inputShow: false,
+            reply: [
+              {
+                from: '张三',
+                fromId: 19870621,
+                // fromHeadImg: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
+                headImg: imageone,
+                to: '麻子',
+                toId: 19891221,
+                comment: '23123122113',
+                time: '2022年8月14日 8:43',
+                commentNum: 25,
+                like: 5,
+                inputShow: false
+
+              }
+            ]
+          },
+          {
+            name: '麻子',
+            id: 20190830,
+            // headImg: 'https://p9-passport.byteacctimg.com/img/mosaic-legacy/3795/3047680722~300x300.image',
+            headImg: imagefour,
+            comment: '12312312312',
+            time: '2022年8月14日 8:43',
+            commentNum: 0,
+            like: 5,
+            inputShow: false,
+            reply: []
+          },
+        ]
+      }
+    }
+  },
 }
 </script>
